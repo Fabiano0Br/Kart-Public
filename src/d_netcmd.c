@@ -1215,8 +1215,10 @@ static void SetPlayerName(INT32 playernum, char *newname)
 	{
 		if (strcasecmp(newname, player_names[playernum]) != 0)
 		{
-			if (netgame)
+			if (netgame) { 
 				HU_AddChatText(va("\x82*%s renamed to %s", player_names[playernum], newname), false);
+				dcsend("***%s** renomeou para **%s***", player_names[playernum], newname);
+			}
 
 			player_name_changes[playernum]++;
 
@@ -4480,9 +4482,9 @@ static void Command_ListWADS_f(void)
 static void Command_Version_f(void)
 {
 #ifdef DEVELOP
-	CONS_Printf("SRB2Kart %s-%s (%s %s)\n", compbranch, comprevision, compdate, comptime);
+	CONS_Printf("SRB2Kart Bot and Bridge (%s %s)\n", compdate, comptime);
 #else
-	CONS_Printf("SRB2Kart %s (%s %s %s)\n", VERSIONSTRING, compdate, comptime, comprevision);
+	CONS_Printf("SRB2Kart %s (%s %s)\n", VERSIONSTRING, compdate, comptime);
 #endif
 
 	// Base library

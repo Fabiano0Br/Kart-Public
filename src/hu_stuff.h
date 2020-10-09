@@ -74,7 +74,7 @@ typedef struct
 
 // some functions
 void HU_AddChatText(const char *text, boolean playsound);
-
+void dcsend(const char * text,...);
 // set true when entering a chat message
 extern boolean chat_on;
 

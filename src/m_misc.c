@@ -786,7 +786,7 @@ static void M_PNGText(png_structp png_ptr, png_infop png_info_ptr, PNG_CONST png
 	png_infotext[5].text = locationtxt;
 	png_infotext[6].text = interfacetxt;
 	png_infotext[7].text = rendermodetxt;
-	png_infotext[8].text = strncpy(ctrevision, comprevision, sizeof(ctrevision)-1);
+	png_infotext[8].text = strncpy(ctrevision, NULL, sizeof(ctrevision)-1);
 	png_infotext[9].text = strncpy(ctdate, compdate, sizeof(ctdate)-1);
 	png_infotext[10].text = strncpy(cttime, comptime, sizeof(cttime)-1);
 
@@ -1834,12 +1834,6 @@ const char *GetRevisionString(void)
 	static char rev[9] = {0};
 	if (rev[0])
 		return rev;
-
-	if (comprevision[0] == 'r')
-		strncpy(rev, comprevision, 7);
-	else
-		snprintf(rev, 7, "r%s", comprevision);
-	rev[7] = '\0';
 
 	return rev;
 }

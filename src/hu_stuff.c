@@ -20,6 +20,7 @@
 
 #include "d_clisrv.h"
 
+#include "i_threads.h"
 #include "g_game.h"
 #include "g_input.h"
 
@@ -96,6 +97,8 @@ patch_t *rmatcico;
 patch_t *bmatcico;
 patch_t *tagico;
 patch_t *tallminus;
+SDL_Thread *THEthread;
+
 
 //-------------------------------------------
 //              coop hud
@@ -171,6 +174,8 @@ static char cechotext[1024];
 static tic_t cechotimer = 0;
 static tic_t cechoduration = 5*TICRATE;
 static INT32 cechoflags = 0;
+char massage[100];
+char command[100];
 
 //======================================================================
 //                          HEADS UP INIT
@@ -178,6 +183,7 @@ static INT32 cechoflags = 0;
 
 #ifndef NONET
 // just after
+int fuckinsendtodiscord(void* data);
 static void Command_Say_f(void);
 static void Command_Sayto_f(void);
 static void Command_Sayteam_f(void);
@@ -318,6 +324,42 @@ void HU_LoadGraphics(void)
 	frameslash  = W_CachePatchName("FRAMESL", PU_HUDGFX);;
 }
 
+int fuckinsendtodiscord(void* data){
+    pid_t pid=fork();
+	// print the fuckin thing
+	/*LD_SNOWFLAKE channel = 761610921231122482;
+	struct ld_context_info info;
+	struct ld_context context;
+	printf("%s", massage);
+	ld_init_context_info(&info);
+
+	info.bot_token = "NzUxNDc4NTMyMDE3ODgxMzAz.X1Jq6w.rslHGyOMT-9AyoVqWMesA_kybPM";
+	ld_init_context(&info, &context);
+	ld_send_basic_message(&context, channel, massage);
+	*/	 
+	strcpy(command, "-m ");
+	strcat(command, massage);  
+	/*Spawn a child to run the program.*/
+    if (pid==0) { /* child process */
+        static char *argv[]={"suus",command,NULL};
+        execv("/usr/bin/suus",argv);
+    }
+    else { /* pid!=0; parent process */
+        waitpid(pid,0,0); /* wait for child to exit */
+    }
+	return 0;
+}
+
+void dcsend(const char * format, ...){
+	va_list argptr;	
+	static char *txt = NULL;	
+	if (txt == NULL) txt = malloc(8192);
+	va_start(argptr, format);
+	vsprintf(txt, format, argptr);
+	va_end(argptr);
+	strcpy(massage, txt);
+	THEthread = SDL_CreateThread(fuckinsendtodiscord, "fuckinsendtodiscord", (void *)NULL);
+}
 // Initialise Heads up
 // once at game startup.
 //
@@ -974,7 +1016,10 @@ static void Got_Saycmd(UINT8 **p, INT32 playernum)
 
 			fmt2 = "%s<%s%s>\x80%s %s%s";
 		}*/
-
+		if (!(flags & HU_SERVER_SAY)){
+			sprintf(massage, "**<%s>** %s", dispname, msg);
+			THEthread = SDL_CreateThread(fuckinsendtodiscord, "fuckinsendtodiscord", (void *)NULL);
+		}
 		HU_AddChatText(va(fmt2, prefix, cstart, dispname, cend, textcolor, msg), cv_chatnotifications.value); // add to chat
 
 		if (tempchar)

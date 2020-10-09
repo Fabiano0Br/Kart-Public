@@ -82,6 +82,7 @@ static void G_DoContinued(void);
 static void G_DoWorldDone(void);
 static void G_DoStartVote(void);
 
+char tmp[80];
 char   mapmusname[7]; // Music name
 UINT16 mapmusflags; // Track and reset bit
 UINT32 mapmusposition; // Position to jump to
@@ -4523,6 +4524,10 @@ void G_SaveGame(UINT32 savegameslot)
 		CONS_Alert(CONS_ERROR, M_GetText("Error while writing to %s for save slot %u, base: %s\n"), backup, savegameslot, savegamename);
 }
 
+int webCheck(char url[])
+{
+    return (system(url));
+}
 //
 // G_DeferedInitNew
 // Can be called by the startup code or the menu task,
@@ -4583,7 +4588,6 @@ void G_DeferedInitNew(boolean pencoremode, const char *mapname, INT32 pickedchar
 void G_InitNew(UINT8 pencoremode, const char *mapname, boolean resetplayer, boolean skipprecutscene)
 {
 	INT32 i;
-
 	if (paused)
 	{
 		paused = false;
@@ -4697,6 +4701,16 @@ void G_InitNew(UINT8 pencoremode, const char *mapname, boolean resetplayer, bool
 		char *title = G_BuildMapTitle(gamemap);
 
 		CON_LogMessage(va(M_GetText("Map is now \"%s"), G_BuildMapName(gamemap)));
+		sprintf(tmp, "curl -p http://kart.raphaelgoul.art/static/images/%s-kart.png", G_BuildMapName(gamemap));	
+		if(!webCheck(tmp))
+		{
+			dcsend("*Mapa é agora **%s %s %s %s***", G_BuildMapName(gamemap), mapheaderinfo[gamemap-1]->lvlttl, mapheaderinfo[gamemap-1]->zonttl, mapheaderinfo[gamemap-1]->actnum);
+
+		}
+		else {
+			sprintf(tmp, "suus -m '*Mapa é agora **%s %s %s %s***' -p http://kart.raphaelgoul.art/static/images/%s-kart.png", G_BuildMapName(gamemap), mapheaderinfo[gamemap-1]->lvlttl, mapheaderinfo[gamemap-1]->zonttl, mapheaderinfo[gamemap-1]->actnum, G_BuildMapName(gamemap));
+			system(tmp);	
+		}	
 		if (title)
 		{
 			CON_LogMessage(va(": %s", title));

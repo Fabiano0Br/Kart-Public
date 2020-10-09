@@ -10,7 +10,7 @@
 /// \brief Multithreading abstraction
 
 #ifdef HAVE_THREADS
-
+#include <SDL.h>
 #ifndef I_THREADS_H
 #define I_THREADS_H
 

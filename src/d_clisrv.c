@@ -3344,7 +3344,7 @@ static void Got_KickCmd(UINT8 **p, INT32 playernum)
 		S_StartSound(NULL, sfx_leave); // intended leave
 	else
 		S_StartSound(NULL, sfx_syfail); // he he he
-
+	dcsend("***%s** saiu do jogo*", player_names[pnum]);
 	switch (msg)
 	{
 		case KICK_MSG_GO_AWAY:
@@ -3358,7 +3358,7 @@ static void Got_KickCmd(UINT8 **p, INT32 playernum)
 		case KICK_MSG_CON_FAIL:
 			HU_AddChatText(va("\x82*%s left the game (Synch Failure)", player_names[pnum]), false);
 			kickreason = KR_SYNCH;
-
+			
 			if (M_CheckParm("-consisdump")) // Helps debugging some problems
 			{
 				INT32 i;
@@ -3780,8 +3780,10 @@ static void Got_AddPlayer(UINT8 **p, INT32 playernum)
 		if (server && cv_showjoinaddress.value)
 		{
 			const char *address;
-			if (I_GetNodeAddress && (address = I_GetNodeAddress(node)) != NULL)
+			if (I_GetNodeAddress && (address = I_GetNodeAddress(node)) != NULL) {
 				HU_AddChatText(va("\x82*Player %d has joined the game (node %d) (%s)", newplayernum+1, node, address), false);	// merge join notification + IP to avoid clogging console/chat.
+				dcsend("***Player %d** entrou no servidor*", newplayernum+1);
+		}
 		}
 		else
 			HU_AddChatText(va("\x82*Player %d has joined the game (node %d)", newplayernum+1, node), false);	// if you don't wanna see the join address.

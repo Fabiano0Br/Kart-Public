@@ -326,17 +326,6 @@ void HU_LoadGraphics(void)
 
 int fuckinsendtodiscord(void* data){
     pid_t pid=fork();
-	// print the fuckin thing
-	/*LD_SNOWFLAKE channel = 761610921231122482;
-	struct ld_context_info info;
-	struct ld_context context;
-	printf("%s", massage);
-	ld_init_context_info(&info);
-
-	info.bot_token = "NzUxNDc4NTMyMDE3ODgxMzAz.X1Jq6w.rslHGyOMT-9AyoVqWMesA_kybPM";
-	ld_init_context(&info, &context);
-	ld_send_basic_message(&context, channel, massage);
-	*/	 
 	strcpy(command, "-m ");
 	strcat(command, massage);  
 	/*Spawn a child to run the program.*/
